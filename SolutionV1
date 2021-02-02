@@ -1,1 +1,144 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+struct film
+{
+    string title;
+    string produser;
+    string country;
+    int revenue;
+};
+
+void deleteLastElement (film[12],int); // Удаление последнего элемента массива структур
+void addElement (film[12],film,int,int); // Добавление элемента в массив структур
+
+int main ()
+{
+     setlocale(LC_ALL, "Russian");
+     ifstream input ("films.txt");
+
+
+     if (input.is_open()) //если файл был успешно открыт
+     {
+        ofstream output("EditedFilms.txt"); //открываем файл для записи
+        film films[12];
+        int i=1;
+        string str;
+
+        while (!input.eof() && i<=10)// формирование массива структур
+        {
+            getline (input,films[i].title);
+            getline (input,films[i].produser);
+            getline (input,films[i].country);
+            input>>films[i].revenue;
+            getline (input,str);
+            i++;
+        }
+
+        int filmsCount=i-1;
+
+        i=1;
+        cout<<"Фильмы\n";
+        while (i<=filmsCount) //Выводим массив в консоль
+        {
+            cout<<"Название: "<<films[i].title<<'\n'<<"Режиссер: "<<films[i].produser<<'\n'<<"Страна: "<<films[i].country<<'\n'<<"Доходы: "<<films[i].revenue<<'\n'<<'\n';
+            i++;
+        }
+
+        deleteLastElement(films,filmsCount);
+        filmsCount--;
+        deleteLastElement(films,filmsCount);
+        filmsCount--; // Удаляем 2 последних элемента массива структур
+
+        i=1;
+        cout<<"Фильмы после удаления элементов\n";
+        while (i<=filmsCount) //Выводим массив после удаления элементов
+        {
+            cout<<"Название: "<<films[i].title<<'\n'<<"Режиссер: "<<films[i].produser<<'\n'<<"Страна: "<<films[i].country<<'\n'<<"Доходы: "<<films[i].revenue<<'\n'<<'\n';
+            i++;
+        }
+
+        cout<< "Укажите название фильма, после которого вы хотите добавить новый фильм\n";
+        string titleOfPrevious;
+        int positionOfPrevious=0;
+        while (positionOfPrevious==0)// Ищем позицию фильма с заданным названием
+        {
+            i=filmsCount;
+            cin>> titleOfPrevious;
+            while (!(titleOfPrevious==films[i].title) && i>=0) 
+            {
+              i--;
+              if (i!=0) positionOfPrevious=i+1;
+              else 
+              {
+                cout<<"\nНазвание не найдено, попробуйте еще раз\n";
+                cout<< "Укажите название фильма, после которого вы хотите добавить новый фильм\n";
+              }
+            }
+        }
+
+        film newFilm;
+        cout<< "\nВведите название, фамилию режиссера, страну производства, прибыль вашего фильма";
+        cout<< "\nНазвание ";
+        cin>> newFilm.title;
+        cout<< "Режиссер ";
+        cin>> newFilm.produser;
+        cout<< "Страна ";
+        cin>> newFilm.country;
+        cout<< "Прибыль ";
+        cin>> newFilm.revenue;
+
+        addElement (films,newFilm,positionOfPrevious,filmsCount);// Добавляем новый фильм в массив
+        filmsCount++;
+
+        cout<<"\nФильмы после добавления элемента\n";
+        i=1;
+        while (i<=filmsCount) //Выводим массив после добавления элемента
+        {
+            cout<<"Название: "<<films[i].title<<'\n'<<"Режиссер: "<<films[i].produser<<'\n'<<"Страна: "<<films[i].country<<'\n'<<"Доходы: "<<films[i].revenue<<'\n'<<'\n';
+            i++;
+        }
+
+        i=1;
+        while (i<=filmsCount) //Вводим измененный массив в EditedFilms.txt
+        {
+            output<<"Название: "<<films[i].title<<'\n'<<"Режиссер: "<<films[i].produser<<'\n'<<"Страна: "<<films[i].country<<'\n'<<"Доходы: "<<films[i].revenue<<'\n'<<'\n';
+            i++;
+        }
+        output.close(); //Закрываем файл для записи
+     }
+     else //Если файл не был открыт - сообщение об ошибке
+        cout << "Не удалось открыть файл films.txt\n";
+
+    input.close(); //Закрываем файл с исходными данными
+}
+ void deleteLastElement (film films[12],int filmsCount)
+ {
+     films[filmsCount].title="";
+     films[filmsCount].produser="";
+     films[filmsCount].country="";
+     films[filmsCount].revenue=0;
+     filmsCount--;
+ }
+
+ void addElement (film films[12], film newFilm, int positionOfPrevious, int filmsCount)
+ {
+     int j=filmsCount;
+     while (j>positionOfPrevious)
+     {
+         films[j+1].title=films[j].title;
+         films[j+1].produser=films[j].produser;
+         films[j+1].country=films[j].country;
+         films[j+1].revenue=films[j].revenue;
+         j--;
+     }
+     films[j].title=newFilm.title;
+     films[j].produser=newFilm.produser;
+     films[j].country=newFilm.country;
+     films[j].revenue=newFilm.revenue;
+     filmsCount++;
+ }
 
