@@ -64,30 +64,34 @@ int main ()
         cout<< "Укажите название фильма, после которого вы хотите добавить новый фильм\n";
         string titleOfPrevious;
         int positionOfPrevious=0;
+        cin>>titleOfPrevious;
+
         while (positionOfPrevious==0)// Ищем позицию фильма с заданным названием
         {
             i=filmsCount;
-            cin>> titleOfPrevious;
-            while (!(titleOfPrevious==films[i].title) && i>=0) 
+            while (!(titleOfPrevious==films[i].title) && i>0) i--;
+            if (i!=0) 
             {
-              i--;
-              if (i!=0) positionOfPrevious=i+1;
-              else 
-              {
-                cout<<"\nНазвание не найдено, попробуйте еще раз\n";
-                cout<< "Укажите название фильма, после которого вы хотите добавить новый фильм\n";
-              }
+              positionOfPrevious=i+1;
             }
+             else 
+            {
+              cout<<"\nНазвание не найдено, попробуйте еще раз\n";
+              cout<< "Укажите название фильма, после которого вы хотите добавить новый фильм\n";
+              cin>>titleOfPrevious;
+            }
+            
         }
 
         film newFilm;
+        getline (cin,str);
         cout<< "\nВведите название, фамилию режиссера, страну производства, прибыль вашего фильма";
         cout<< "\nНазвание ";
-        cin>> newFilm.title;
+        getline(cin, newFilm.title);
         cout<< "Режиссер ";
-        cin>> newFilm.produser;
+        getline (cin, newFilm.produser);
         cout<< "Страна ";
-        cin>> newFilm.country;
+        getline (cin, newFilm.country);
         cout<< "Прибыль ";
         cin>> newFilm.revenue;
 
@@ -127,7 +131,7 @@ int main ()
  void addElement (film films[12], film newFilm, int positionOfPrevious, int filmsCount)
  {
      int j=filmsCount;
-     while (j>positionOfPrevious)
+     while (j>=positionOfPrevious)
      {
          films[j+1].title=films[j].title;
          films[j+1].produser=films[j].produser;
@@ -135,10 +139,10 @@ int main ()
          films[j+1].revenue=films[j].revenue;
          j--;
      }
+     j++;
      films[j].title=newFilm.title;
      films[j].produser=newFilm.produser;
      films[j].country=newFilm.country;
      films[j].revenue=newFilm.revenue;
      filmsCount++;
  }
-
